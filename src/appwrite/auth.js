@@ -30,13 +30,13 @@ export class AuthService {
     }
     
     async login({ email, password }) {
-        try {
-            await this.account.createEmailPasswordSession(email, password);
-            window.location.reload();
-        } catch (error) {
-            throw error;
-        }
+    try {
+        await this.account.createEmailPasswordSession(email, password);
+        window.location.href = "/";
+    } catch (error) {
+        throw error;
     }
+}
     
 
     async getCurrentUser() {
