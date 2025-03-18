@@ -52,6 +52,7 @@ export class AuthService {
     async logout() {
         try{
             await this.account.deleteSessions('current');
+            window.location.href = "/";
         }catch(error){
             console.log("Appwrite service :: logout :: error" , error);
         }
