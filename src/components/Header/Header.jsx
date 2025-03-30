@@ -17,12 +17,12 @@ function Header() {
   ];
 
   return (
-    <header className="py-4 bg-gray-100 shadow-md">
+    <header className="py-4 bg-gradient-to-r from-blue-400 to-blue-600 shadow-xl border-b-4 border-blue-900 font-[Comic Sans MS]">
       <Container>
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="mr-6">
-            <Logo width="70px" />
+            <Logo width="70px" className="drop-shadow-lg" />
           </Link>
 
           {/* Navigation Links */}
@@ -33,7 +33,7 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => navigate(item.slug)}
-                      className="px-5 py-2 rounded-lg text-gray-700 transition-all duration-200 hover:bg-blue-200 hover:text-blue-800"
+                      className="px-5 py-2 rounded-lg text-yellow-100 bg-blue-500 border-2 border-yellow-300 transition-all duration-200 hover:bg-yellow-300 hover:text-blue-900 shadow-md"
                     >
                       {item.name}
                     </button>
