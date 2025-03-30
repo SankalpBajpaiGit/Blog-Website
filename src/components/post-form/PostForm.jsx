@@ -20,16 +20,17 @@ export default function PostForm({ post }) {
 
     const submit = async (data) => {
         try {
-            let fileId = post?.featuredimage;
+            let fileId = post?.featuredimage; // Keep old image if not updating
 
+            // Handle new file upload if available
             if (data.image && data.image.length > 0) {
                 const file = await appwriteService.uploadFile(data.image[0]);
                 if (file) {
-                    fileId = file.$id;
+                    fileId = file.$id; // Set file ID correctly
                     console.log("Uploaded file ID:", fileId);
 
                     if (post?.featuredimage) {
-                        await appwriteService.deleteFile(post.featuredimage);
+                        await appwriteService.deleteFile(post.featuredimage); // Delete old image
                     }
                 } else {
                     throw new Error("File upload failed.");
@@ -37,21 +38,23 @@ export default function PostForm({ post }) {
             }
 
             if (post) {
+                // Update Post
                 const dbPost = await appwriteService.updatePost(post.$id, {
                     ...data,
-                    featuredimage: fileId,
+                    featuredimage: fileId, // Use correct field name
                 });
 
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
             } else {
+                // Create New Post
                 if (!fileId) {
                     throw new Error("Featured image is required for new posts.");
                 }
 
                 const dbPost = await appwriteService.createPost({
                     ...data,
-                    userid: userData.$id,
-                    featuredimage: fileId,
+                    userid: userData.$id, // Use correct field name
+                    featuredimage: fileId, // Use correct field name
                 });
 
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
@@ -83,18 +86,18 @@ export default function PostForm({ post }) {
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap font-[Comic Sans MS] text-white bg-gradient-to-r from-blue-700 via-purple-700 to-pink-600 p-6 border-4 border-white shadow-[4px_4px_0px_#ffcc00] rounded-lg">
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
             <div className="w-2/3 px-2">
                 <Input
                     label="Title :"
-                    placeholder="Enter your cool title..."
-                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
+                    placeholder="Title"
+                    className="mb-4"
                     {...register("title", { required: true })}
                 />
                 <Input
                     label="Slug :"
-                    placeholder="your-awesome-post"
-                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
+                    placeholder="Slug"
+                    className="mb-4"
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
@@ -106,30 +109,26 @@ export default function PostForm({ post }) {
                 <Input
                     label="Featured Image :"
                     type="file"
-                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
+                    className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={appwriteService.getFilePreview(post.featuredimage)}
+                            src={appwriteService.getFilePreview(post.featuredimage)} // Use correct field name
                             alt={post.title}
-                            className="rounded-lg border-4 border-white"
+                            className="rounded-lg"
                         />
                     </div>
                 )}
                 <Select
                     options={["active", "inactive"]}
                     label="Status"
-                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
+                    className="mb-4"
                     {...register("status", { required: true })}
                 />
-                <Button
-                    type="submit"
-                    bgColor={post ? "bg-green-500" : "bg-yellow-300"}
-                    className="w-full text-lg font-bold text-black border-2 border-white px-4 py-2 rounded-md shadow-lg hover:bg-yellow-400 transition"
-                >
+                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
                 </Button>
             </div>
