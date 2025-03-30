@@ -20,17 +20,14 @@ export default function PostForm({ post }) {
 
     const submit = async (data) => {
         try {
-            let fileId = post?.featuredimage; // Keep old image if not updating
+            let fileId = post?.featuredimage;
 
-            // Handle new file upload if available
             if (data.image && data.image.length > 0) {
                 const file = await appwriteService.uploadFile(data.image[0]);
                 if (file) {
-                    fileId = file.$id; // Set file ID correctly
-                    console.log("Uploaded file ID:", fileId);
-
+                    fileId = file.$id;
                     if (post?.featuredimage) {
-                        await appwriteService.deleteFile(post.featuredimage); // Delete old image
+                        await appwriteService.deleteFile(post.featuredimage);
                     }
                 } else {
                     throw new Error("File upload failed.");
@@ -38,25 +35,20 @@ export default function PostForm({ post }) {
             }
 
             if (post) {
-                // Update Post
                 const dbPost = await appwriteService.updatePost(post.$id, {
                     ...data,
-                    featuredimage: fileId, // Use correct field name
+                    featuredimage: fileId,
                 });
-
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
             } else {
-                // Create New Post
                 if (!fileId) {
                     throw new Error("Featured image is required for new posts.");
                 }
-
                 const dbPost = await appwriteService.createPost({
                     ...data,
-                    userid: userData.$id, // Use correct field name
-                    featuredimage: fileId, // Use correct field name
+                    userid: userData.$id,
+                    featuredimage: fileId,
                 });
-
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
             }
         } catch (error) {
@@ -71,7 +63,6 @@ export default function PostForm({ post }) {
                 .toLowerCase()
                 .replace(/[^a-zA-Z\d\s]+/g, "-")
                 .replace(/\s/g, "-");
-
         return "";
     }, []);
 
@@ -81,23 +72,22 @@ export default function PostForm({ post }) {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
             }
         });
-
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap font-[Comic Sans MS] text-yellow-100">
             <div className="w-2/3 px-2">
                 <Input
                     label="Title :"
                     placeholder="Title"
-                    className="mb-4"
+                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
                     {...register("title", { required: true })}
                 />
                 <Input
                     label="Slug :"
                     placeholder="Slug"
-                    className="mb-4"
+                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
@@ -109,29 +99,34 @@ export default function PostForm({ post }) {
                 <Input
                     label="Featured Image :"
                     type="file"
-                    className="mb-4"
+                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={appwriteService.getFilePreview(post.featuredimage)} // Use correct field name
+                            src={appwriteService.getFilePreview(post.featuredimage)}
                             alt={post.title}
-                            className="rounded-lg"
+                            className="rounded-lg border-4 border-yellow-300 shadow-[5px_5px_0px_#ffcc00]"
                         />
                     </div>
                 )}
                 <Select
                     options={["active", "inactive"]}
                     label="Status"
-                    className="mb-4"
+                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
                     {...register("status", { required: true })}
                 />
-                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
+                <Button
+                    type="submit"
+                    bgColor={post ? "bg-green-500" : "bg-blue-500"}
+                    className="w-full border-4 border-yellow-300 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                >
                     {post ? "Update" : "Submit"}
                 </Button>
             </div>
         </form>
     );
 }
+
