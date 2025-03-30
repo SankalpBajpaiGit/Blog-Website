@@ -26,6 +26,8 @@ export default function PostForm({ post }) {
                 const file = await appwriteService.uploadFile(data.image[0]);
                 if (file) {
                     fileId = file.$id;
+                    console.log("Uploaded file ID:", fileId);
+
                     if (post?.featuredimage) {
                         await appwriteService.deleteFile(post.featuredimage);
                     }
@@ -39,16 +41,19 @@ export default function PostForm({ post }) {
                     ...data,
                     featuredimage: fileId,
                 });
+
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
             } else {
                 if (!fileId) {
                     throw new Error("Featured image is required for new posts.");
                 }
+
                 const dbPost = await appwriteService.createPost({
                     ...data,
                     userid: userData.$id,
                     featuredimage: fileId,
                 });
+
                 if (dbPost) navigate(`/post/${dbPost.$id}`);
             }
         } catch (error) {
@@ -63,6 +68,7 @@ export default function PostForm({ post }) {
                 .toLowerCase()
                 .replace(/[^a-zA-Z\d\s]+/g, "-")
                 .replace(/\s/g, "-");
+
         return "";
     }, []);
 
@@ -72,22 +78,23 @@ export default function PostForm({ post }) {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
             }
         });
+
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap font-[Comic Sans MS] text-yellow-100">
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap font-[Comic Sans MS] text-white bg-gradient-to-r from-blue-700 via-purple-700 to-pink-600 p-6 border-4 border-white shadow-[4px_4px_0px_#ffcc00] rounded-lg">
             <div className="w-2/3 px-2">
                 <Input
                     label="Title :"
-                    placeholder="Title"
-                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                    placeholder="Enter your cool title..."
+                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
                     {...register("title", { required: true })}
                 />
                 <Input
                     label="Slug :"
-                    placeholder="Slug"
-                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                    placeholder="your-awesome-post"
+                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
@@ -99,7 +106,7 @@ export default function PostForm({ post }) {
                 <Input
                     label="Featured Image :"
                     type="file"
-                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
@@ -108,20 +115,20 @@ export default function PostForm({ post }) {
                         <img
                             src={appwriteService.getFilePreview(post.featuredimage)}
                             alt={post.title}
-                            className="rounded-lg border-4 border-yellow-300 shadow-[5px_5px_0px_#ffcc00]"
+                            className="rounded-lg border-4 border-white"
                         />
                     </div>
                 )}
                 <Select
                     options={["active", "inactive"]}
                     label="Status"
-                    className="mb-4 border-4 border-yellow-300 bg-blue-500 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                    className="mb-4 bg-gray-800 text-white border-2 border-yellow-300 rounded-lg px-3 py-2"
                     {...register("status", { required: true })}
                 />
                 <Button
                     type="submit"
-                    bgColor={post ? "bg-green-500" : "bg-blue-500"}
-                    className="w-full border-4 border-yellow-300 text-yellow-100 shadow-[5px_5px_0px_#ffcc00]"
+                    bgColor={post ? "bg-green-500" : "bg-yellow-300"}
+                    className="w-full text-lg font-bold text-black border-2 border-white px-4 py-2 rounded-md shadow-lg hover:bg-yellow-400 transition"
                 >
                     {post ? "Update" : "Submit"}
                 </Button>
@@ -129,4 +136,3 @@ export default function PostForm({ post }) {
         </form>
     );
 }
-
