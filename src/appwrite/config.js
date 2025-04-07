@@ -63,7 +63,7 @@ export class Service {
                 conf.appwriteCollectionId,
                 slug
             )
-            window.location.href = "/";
+            window.location.reload();
             return true
         } catch (error) {
             console.log("Appwrite serive :: deletePost :: error", error);
