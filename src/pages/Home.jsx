@@ -38,11 +38,10 @@ function Home() {
           {/* 🎭🔥 MIT Manipal Blog Intro */}
           <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white py-14 px-6 rounded-xl shadow-xl">
             <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">
-              🚀 Welcome to the Unofficial MIT Manipal Students Blog
+              Login to start Blogging
             </h1>
             <p className="text-lg md:text-xl max-w-3xl mx-auto font-medium">
-              The ultimate space for MITians to rant, flex, and vibe. 
-              From midsem grinds to Revels madness, this blog covers it all.
+              The ultimate space for blogs.
             </p>
             <p className="mt-4 text-gray-200 font-semibold">
               Tech | Events | Hostel Life | Placements | Drama
