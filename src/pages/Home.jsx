@@ -44,7 +44,7 @@ function Home() {
               The ultimate space for blogs.
             </p>
             <p className="mt-4 text-gray-200 font-semibold">
-              Tech | Events | Hostel Life | Placements | Drama
+              Tech | Events | Life | Rant | Drama
             </p>
           </div>
         </Container>
